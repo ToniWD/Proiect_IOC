@@ -48,5 +48,8 @@ public class PuzzlePiece : MonoBehaviour
         this.GetComponent<Draggable>().dragOn = false;
         removePiece(this.gameObject);
 
+
+        this.GetComponent<SpriteRenderer>().sortingOrder = 0;
+
     }
 }

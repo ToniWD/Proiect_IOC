@@ -48,9 +48,11 @@ public class Draggable : MonoBehaviour
     void OnMouseUp()
     {
         if (!dragOn) return;
+
+        this.GetComponent<SpriteRenderer>().sortingOrder = 1;
+
         if (snap && Vector3.Distance(transform.position, snapPoz) <= snapDistance) doAfterSnap?.Invoke();
         isDragging = false;
 
-        this.GetComponent<SpriteRenderer>().sortingOrder = 1;
     }
 }
