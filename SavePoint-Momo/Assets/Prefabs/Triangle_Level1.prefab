@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5142763634078584515}
   - component: {fileID: -3334383145050473186}
   m_Layer: 0
-  m_Name: Triangle
+  m_Name: Triangle_Level1
   m_TagString: Triangle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -85,8 +85,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 0.023362402, g: 0.23494649, b: 0.990566, a: 1}
+  m_Sprite: {fileID: 3373456926070534769, guid: 06a18aea47d6dbb4790d9b27b5ffe558, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -133,8 +133,8 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.28866667}
-    oldSize: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.99, y: 1.67}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -142,9 +142,17 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0, y: 0.5773587}
-      - {x: -0.5, y: -0.28866667}
-      - {x: 0.5, y: -0.28866667}
+    - - {x: 0.40570498, y: -0.18626004}
+      - {x: 0.72732544, y: -0.3789665}
+      - {x: 0.7943864, y: -0.2523374}
+      - {x: 0.67880344, y: 0.08199352}
+      - {x: 0.9735513, y: 0.52259016}
+      - {x: 1.0262537, y: 0.6013715}
+      - {x: 0.732255, y: 0.61389226}
+      - {x: 0.34347582, y: 0.18206155}
+      - {x: 0.19092607, y: 0.88222426}
+      - {x: -1.0573802, y: -0.29174608}
+      - {x: 0.54003334, y: -0.7752196}
   m_UseDelaunayMesh: 0
 --- !u!114 &-3334383145050473186
 MonoBehaviour:
@@ -158,3 +166,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 803727a413159be42af3fd43cb8377dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TriangleClick
+  triangles:
+  - {fileID: -5099014422384524095, guid: a429f6d41d639cc49a0232b60cb3c654, type: 3}
+  - {fileID: -4496793923145630661, guid: 167de46246c20bf45b237f1c680c9286, type: 3}
+  - {fileID: 89792020929731136, guid: b3404e4c20340a346afdb5896a8ba49e, type: 3}
+  - {fileID: -2042050257216594749, guid: 36290882240ca154db16aa45595b151d, type: 3}
+  - {fileID: -8915940452146412365, guid: 0a718374f680f3e40ab8af68a2746cb2, type: 3}
+  - {fileID: 2910699813199211054, guid: 4ae054b9d9911f346acf75c87617dd7b, type: 3}
+  - {fileID: 3373456926070534769, guid: 06a18aea47d6dbb4790d9b27b5ffe558, type: 3}
+  clickableSprite: {fileID: 3373456926070534769, guid: 06a18aea47d6dbb4790d9b27b5ffe558, type: 3}
+  isDestroyable: 0

@@ -3,8 +3,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    private int triangleCount;
-
+    public bool isGameOver;
+    
+    private int triangleCount = 0;
+    [SerializeField]
+    private ShapeGenerator shapeGenerator;
     
     public Camera mainCamera;
     
@@ -15,16 +18,11 @@ public class GameManager : MonoBehaviour
             mainCamera = Camera.main;
     }
 
-    private void Start()
-    {
-        triangleCount = GameObject.FindGameObjectsWithTag("Triangle").Length;
-    }
-
     public void RemoveTriangle()
     {
-        triangleCount--;
+        triangleCount++;
 
-        if (triangleCount <= 0)
+        if (triangleCount == shapeGenerator.blueCount)
         {
             EndGame();
         }
@@ -32,8 +30,10 @@ public class GameManager : MonoBehaviour
 
     private void EndGame()
     {
+        isGameOver = true;
         Debug.Log("Ai câștigat! Nu mai sunt triunghiuri!");
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
+        StopAllCoroutines();
     }
     
 }
