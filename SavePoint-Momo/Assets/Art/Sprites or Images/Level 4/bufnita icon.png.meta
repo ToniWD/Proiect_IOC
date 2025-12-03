@@ -169,7 +169,7 @@ TextureImporter:
         width: 144
         height: 146
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -182,77 +182,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: nivel 4 bufnita pt semn_1
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 174
-        width: 6
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2a5ead4072a9bb7b0800000000000000
-      internalID: -5207399051747990110
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: nivel 4 bufnita pt semn_2
-      rect:
-        serializedVersion: 2
-        x: 60
-        y: 156
-        width: 6
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9d5281da73dad6d10800000000000000
-      internalID: 2120541454200219097
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: nivel 4 bufnita pt semn_3
-      rect:
-        serializedVersion: 2
-        x: 57
-        y: 147
-        width: 8
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a6cec5f9f15cff400800000000000000
-      internalID: 360223234821254250
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 438039ada12d57c448d665ad6476b99d
     internalID: 0
     vertices: []
     indices: 

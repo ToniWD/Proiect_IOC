@@ -158,28 +158,6 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: nivel 4 pitigoi pt semn_0
-      rect:
-        serializedVersion: 2
-        x: 151
-        y: 205
-        width: 8
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 234d73e7361e9fda0800000000000000
-      internalID: -5910445218511465422
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: nivel 4 pitigoi pt semn_1
       rect:
         serializedVersion: 2
@@ -188,7 +166,7 @@ TextureImporter:
         width: 119
         height: 106
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -201,33 +179,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: nivel 4 pitigoi pt semn_2
-      rect:
-        serializedVersion: 2
-        x: 173
-        y: 140
-        width: 6
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b6d83c0feb0f46860800000000000000
-      internalID: 7522401980489370987
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 0e355283f32994445ad9e074ec37ed56
     internalID: 0
     vertices: []
     indices: 
