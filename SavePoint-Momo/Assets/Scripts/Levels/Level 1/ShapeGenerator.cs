@@ -18,7 +18,7 @@ public class ShapeGenerator : MonoBehaviour
         {
             SpawnRandomShape();
         }
-        Debug.LogError(blueCount);
+        Debug.Log("Blue count - " + blueCount);
         if (blueCount < 3)
         {
             for (int i = 0; i < 3; i++)
@@ -26,8 +26,8 @@ public class ShapeGenerator : MonoBehaviour
                 SpawnClickableFish();
             }
         }
-        
-        Debug.LogError(blueCount);
+
+        Debug.Log("Blue count - " + blueCount);
     }
 
     private void SpawnClickableFish()

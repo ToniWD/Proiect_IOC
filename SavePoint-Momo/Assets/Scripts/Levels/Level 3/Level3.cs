@@ -18,6 +18,8 @@ public class Level3 : MonoBehaviour
     private static void levelComplited()
     {
         Debug.Log("Final nivel---------------------");
+
+        MainGameManager.play("Level 4");
     }
 
 }

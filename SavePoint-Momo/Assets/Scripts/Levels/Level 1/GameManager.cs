@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviour
         Debug.Log("Ai câștigat! Nu mai sunt triunghiuri!");
         //Time.timeScale = 0f;
         StopAllCoroutines();
+
+        MainGameManager.play("Level 3");
     }
     
 }
