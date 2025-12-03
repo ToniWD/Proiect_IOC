@@ -1,34 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class TriangleClick : MonoBehaviour
+public class UnclickableFish : MonoBehaviour
 {
     private SpriteRenderer sr;
-    public Sprite[] triangles;
-    public Sprite clickableSprite;
-    public bool isDestroyable;
-    private string spriteName;
+    public Sprite[] spriteOptions;
     
-    public float duration = 0.1f;        // How long it shakes
-    public float magnitude = 0.01f;     // How strong the shake is
-    
+    private float shakeDuration = 0.1f;        // How long it shakes
+    public float magnitude = 0.25f;     // How strong the shake is
+
     void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
         if (sr == null) Debug.LogError("SpriteRenderer missing!");
-        int fish = Random.Range(0, triangles.Length);
-        sr.sprite = triangles[fish];
-
-        if (sr.sprite.name.Contains("blue"))
-        {
-            isDestroyable = true;
-        }
-    }
-
-    public void ForceClickable()
-    {
-        sr.sprite = clickableSprite;
-        isDestroyable = true;
+        int fish = Random.Range(0, spriteOptions.Length);
+        sr.sprite = spriteOptions[fish];
     }
     
     void Update()
@@ -48,17 +34,7 @@ public class TriangleClick : MonoBehaviour
         {
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                if (isDestroyable)
-                {
-                    Debug.Log("Clicked " + gameObject.name);
-                
-                    Destroy(gameObject);
-                    GameManager.instance.RemoveTriangle();
-                }
-                else
-                {
-                    StartCoroutine(Shake());
-                }
+                StartCoroutine(Shake());
             }
         }
     }
@@ -70,8 +46,8 @@ public class TriangleClick : MonoBehaviour
 
         while (elapsed < 0.1f)
         {
-            float x = Random.Range(-1f, 1f) * 0.15f;
-            float y = Random.Range(-1f, 1f) * 0.15f;
+            float x = Random.Range(-1f, 1f) * 0.25f;
+            float y = Random.Range(-1f, 1f) * 0.25f;
 
             transform.localPosition = originalPos + new Vector3(x, y, 0);
 

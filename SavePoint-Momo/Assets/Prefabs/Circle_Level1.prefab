@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 7254883985950718080}
   - component: {fileID: 5936471416564301281}
   - component: {fileID: 7189215009082667312}
+  - component: {fileID: 3120166529910752635}
   m_Layer: 0
-  m_Name: Circle
+  m_Name: Circle_Level1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,8 +81,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.9528302, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: -6852196807086595794, guid: aeb5c91d8daa8674fa50afdd9a0dba10, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -125,5 +126,25 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Offset: {x: -0.19, y: -0.12}
+  m_Radius: 0.6709049
+--- !u!114 &3120166529910752635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1903793034613516819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a47d7a8da8e1c764bb70cf38b8009f37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnclickableFish
+  spriteOptions:
+  - {fileID: -6696006184417235144, guid: d11382b45e80e024e824078a257d70cf, type: 3}
+  - {fileID: -3067843786999850660, guid: a6f50824588955746b5ccbe14817a4a9, type: 3}
+  - {fileID: 158953874648719704, guid: b3d1b74c5e1555a4bafacffc0556fbd9, type: 3}
+  - {fileID: 1430340702664695663, guid: a41300e411e4fa848b14d3ab7ced476f, type: 3}
+  - {fileID: 7694210079164250967, guid: 7ce069b0dc09e5a469dac59b03dd75cd, type: 3}
+  - {fileID: -6852196807086595794, guid: aeb5c91d8daa8674fa50afdd9a0dba10, type: 3}
+  - {fileID: -8510179418971259139, guid: 022d832ef4dd9c2419fdacfb0602e252, type: 3}
