@@ -67,12 +67,6 @@ public class Draggable : MonoBehaviour
     {
         if (!dragOn) return;
 
-        Material mat = GetComponent<SpriteRenderer>().material;
-        if (mat.HasProperty("_OutlineWidth"))
-        {
-            mat.SetFloat("_OutlineWidth", 0f);
-        }
-
         this.GetComponent<SpriteRenderer>().sortingOrder -= 3;
 
         if (snap && Vector3.Distance(transform.position, snapPoz) <= snapDistance) doAfterSnap?.Invoke();

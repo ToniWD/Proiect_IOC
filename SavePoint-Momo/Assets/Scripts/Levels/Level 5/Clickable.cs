@@ -10,6 +10,12 @@ public class Clickable : MonoBehaviour
     private void Start()
     {
         mainSc = GameObject.Find("Level5").gameObject.GetComponent<Level5>();
+        Material mat = GetComponent<SpriteRenderer>().material;
+        if (mat.HasProperty("_OutlineWidth"))
+        {
+            mat.SetFloat("_OutlineWidth", 0f);
+            mat.SetColor("_OutlineColor", Color.black);
+        }
     }
 
     private void OnMouseDown()
@@ -23,5 +29,25 @@ public class Clickable : MonoBehaviour
 
         found = true;
         Debug.Log("Click");
+    }
+
+    private void OnMouseEnter()
+    {
+        Material mat = GetComponent<SpriteRenderer>().material;
+        if (mat.HasProperty("_OutlineWidth"))
+        {
+            mat.SetFloat("_OutlineWidth", 2f);
+            mat.SetColor("_OutlineColor", Color.green);
+        }
+    }
+
+    private void OnMouseExit()
+    {
+        Material mat = GetComponent<SpriteRenderer>().material;
+        if (mat.HasProperty("_OutlineWidth"))
+        {
+            mat.SetFloat("_OutlineWidth", 0f);
+            mat.SetColor("_OutlineColor", Color.black);
+        }
     }
 }
