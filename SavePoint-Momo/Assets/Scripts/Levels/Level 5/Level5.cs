@@ -13,21 +13,33 @@ public class Level5 : MonoBehaviour
     public GameObject part1;
     public GameObject part2;
 
+
+    public GameObject Outcome1;
+    public GameObject Outcome2;
+
+    public GameObject final;
+
     public void choice1()
     {
-        Debug.Log("Imbratisare");
-        startSecondPhase();
+        Debug.Log("Imbratisare"); 
+        part1.SetActive(false);
+        Outcome1.SetActive(true);
+        Invoke("startSecondPhase", 8f);
     }
 
     public void choice2()
     {
         Debug.Log("Jucarie");
-        startSecondPhase();
+        part1.SetActive(false);
+        Outcome2.SetActive(true);
+        Invoke("startSecondPhase", 8f);
     }
 
 
     public void startSecondPhase()
     {
+        Outcome1.SetActive(false);
+        Outcome2.SetActive(false);
         part1.SetActive(false);
         part2.SetActive(true);
         Clickable.startGame = true;
@@ -42,13 +54,22 @@ public class Level5 : MonoBehaviour
         }
         count++;
 
-        score.text = "Score: " + count;
+        score.text = "Fructe: " + count;
 
         if (count == countStop)
         {
             Clickable.startGame = false;
+
+            part2.SetActive(false);
+            final.SetActive(true);
             Debug.Log("Finish---------------------");
+            Invoke("finish", 8f);
         }
+    }
+
+    private void finish()
+    {
+        MainGameManager.play("Menu");
     }
 
     public void error()

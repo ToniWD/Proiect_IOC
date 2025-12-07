@@ -48,7 +48,7 @@ public class Level4 : MonoBehaviour
         {
             Debug.Log("Finish -------------------------------------");
 
-            MainGameManager.play("Menu");
+            MainGameManager.play("Level 5");
         }
         index++;
     }

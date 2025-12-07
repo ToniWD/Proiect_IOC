@@ -54,6 +54,10 @@ public class ShapeGenerator : MonoBehaviour
         if (found)
         {
             GameObject go = Instantiate(prefab, pos, Quaternion.identity);
+
+            int randomX = Random.value < 0.5f ? -1 : 1;
+            go.transform.localScale = new Vector3(randomX, 1f, 1f);
+
             go.GetComponent<TriangleClick>().ForceClickable();
             blueCount += go.GetComponent<TriangleClick>().isDestroyable? 1 :0;
         }
@@ -97,6 +101,10 @@ public class ShapeGenerator : MonoBehaviour
         if (found)
         {
             GameObject go = Instantiate(prefab, pos, Quaternion.identity);
+
+            int randomX = Random.value < 0.5f ? -1 : 1;
+            go.transform.localScale = new Vector3(randomX, 1f, 1f);
+
             if (go.CompareTag("Triangle"))
             {
                 blueCount += go.GetComponent<TriangleClick>().isDestroyable? 1 :0;

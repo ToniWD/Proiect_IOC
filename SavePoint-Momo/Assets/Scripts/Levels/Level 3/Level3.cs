@@ -9,10 +9,15 @@ public class Level3 : MonoBehaviour
 {
     public static int count = 5;
 
+    private void Start()
+    {
+        count = 5;
+    }
+
     public static void removePuzzlePiece()
     {
         count--;
-        if (count == 0) levelComplited();
+        if (count <= 0) levelComplited();
     }
 
     private static void levelComplited()
