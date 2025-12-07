@@ -5,13 +5,13 @@ using System.Collections.Generic;
 public class FruitCollectorManager : MonoBehaviour
 {
     [Header("Configurare Nivel")]
-    public int targetFruits = 5;      
-    private int currentFruits = 0;   
+    public int targetFruits = 5;
+    private int currentFruits = 0;
     private bool levelCompleted = false;
 
     [Header("Referințe UI")]
-    public Text counterDisplay;      
-    public GameObject winMessageObject; 
+    public Text counterDisplay;
+    public GameObject winMessageObject;
     public GameObject warningTextObject;
 
     [Header("Resurse Vizuale - Fructe")]
@@ -20,18 +20,13 @@ public class FruitCollectorManager : MonoBehaviour
 
     [Header("Resurse Vizuale - Coș")]
     public Sprite basketBackSprite;
-    
     public Sprite basketFrontSprite;
-    
     public Sprite basketRefSprite;
-    
     public Sprite basketWithPawSprite;
 
     [Header("Resurse Vizuale - Fundaluri")]
     public Sprite backgroundMainSprite;
-    
     public Sprite backgroundSearchingSprite;
-    
     public SpriteRenderer backgroundRenderer;
 
     [Header("Referințe Coș")]
@@ -39,7 +34,8 @@ public class FruitCollectorManager : MonoBehaviour
     public SpriteRenderer basketBackRenderer;
     public SpriteRenderer basketFrontRenderer;
     public SpriteRenderer basketWithPawRenderer;
-    
+
+    // AICI ESTE LISTA PENTRU LOCURILE LIBERE
     public Transform[] fruitSlotsInBasket;
 
     [Header("Indicator Contor Coș")]
@@ -48,7 +44,6 @@ public class FruitCollectorManager : MonoBehaviour
 
     [Header("Animații și Efecte")]
     public float fruitMoveAnimationDuration = 0.5f;
-    
     public float collectAnimationScale = 1.2f;
 
     [Header("Prefab Fruct în Coș")]
@@ -73,26 +68,17 @@ public class FruitCollectorManager : MonoBehaviour
 
     void SetupVisuals()
     {
-
         if (backgroundRenderer != null && backgroundMainSprite != null)
-        {
             backgroundRenderer.sprite = backgroundMainSprite;
-        }
 
         if (basketBackRenderer != null && basketBackSprite != null)
-        {
             basketBackRenderer.sprite = basketBackSprite;
-        }
 
         if (basketFrontRenderer != null && basketFrontSprite != null)
-        {
             basketFrontRenderer.sprite = basketFrontSprite;
-        }
 
         if (basketWithPawRenderer != null && basketWithPawSprite != null)
-        {
             basketWithPawRenderer.sprite = basketWithPawSprite;
-        }
     }
 
     public void AttemptCollectFruit(GameObject fruitObject)
@@ -102,8 +88,8 @@ public class FruitCollectorManager : MonoBehaviour
         if (currentFruits >= targetFruits)
         {
             Debug.Log("Miau! Ai ales prea multe fructe. Cosul e deja plin!");
-            ShowWarning(); 
-            return; 
+            ShowWarning();
+            return;
         }
 
         currentFruits++;
@@ -124,22 +110,43 @@ public class FruitCollectorManager : MonoBehaviour
 
     void AnimateFruitToBasket(GameObject fruitObject, Sprite fruitSprite)
     {
-        if (basketTransform != null)
+        // Calculam indexul (daca e primul fruct, index 0, etc.)
+        int slotIndex = currentFruits - 1;
+
+        // Verificam daca avem sloturi definite in Inspector
+        if (basketTransform != null && fruitSlotsInBasket != null && slotIndex < fruitSlotsInBasket.Length)
         {
-            StartCoroutine(MoveFruitToBasket(fruitObject, fruitSprite));
+            Transform targetSlot = fruitSlotsInBasket[slotIndex];
+            StartCoroutine(MoveFruitToBasket(fruitObject, targetSlot));
         }
         else
         {
+            // Daca nu ai setat sloturile, fructul dispare (fallback)
             fruitObject.SetActive(false);
         }
     }
 
-    System.Collections.IEnumerator MoveFruitToBasket(GameObject fruitObject, Sprite fruitSprite)
+    System.Collections.IEnumerator MoveFruitToBasket(GameObject fruitObject, Transform targetSlot)
     {
         Vector3 startPos = fruitObject.transform.position;
         Vector3 startScale = fruitObject.transform.localScale;
-        Vector3 endPos = basketTransform.position;
-        Vector3 endScale = startScale * 0.3f;
+
+        Vector3 endPos = targetSlot.position;
+
+        // Fructul devine putin mai mic in cos (0.7 din marimea originala)
+        Vector3 endScale = startScale * 0.7f;
+
+        // Oprim click-ul pe fruct ca sa nu il poti lua de doua ori
+        if (fruitObject.GetComponent<Collider2D>() != null)
+        {
+            fruitObject.GetComponent<Collider2D>().enabled = false;
+        }
+
+        // Schimbam ordinea: Stratul 1 este intre Spate (0) si Fata (2)
+        if (fruitObject.GetComponent<SpriteRenderer>() != null)
+        {
+            fruitObject.GetComponent<SpriteRenderer>().sortingOrder = 1;
+        }
 
         float elapsed = 0f;
 
@@ -148,48 +155,39 @@ public class FruitCollectorManager : MonoBehaviour
             elapsed += Time.deltaTime;
             float t = elapsed / fruitMoveAnimationDuration;
 
+            // Miscare lina (Smooth Step)
             float smoothT = t * t * (3f - 2f * t);
-            
+
             fruitObject.transform.position = Vector3.Lerp(startPos, endPos, smoothT);
             fruitObject.transform.localScale = Vector3.Lerp(startScale, endScale, smoothT);
-            
+
             yield return null;
         }
 
-        fruitObject.SetActive(false);
+        // Fixam pozitia finala
+        fruitObject.transform.position = endPos;
+        fruitObject.transform.localScale = endScale;
 
-        AddFruitToBasketVisual(fruitSprite);
+        // Facem fructul copil al cosului (se misca odata cu cosul)
+        fruitObject.transform.SetParent(basketTransform);
 
+        // Adaugam in lista interna
+        fruitsInBasket.Add(fruitObject);
+
+        // Animam cosul (salt mic)
         if (basketTransform != null)
         {
             StartCoroutine(BasketBounceAnimation());
         }
     }
 
-    void AddFruitToBasketVisual(Sprite fruitSprite)
-    {
-        if (fruitSlotsInBasket != null && fruitsInBasket.Count < fruitSlotsInBasket.Length)
-        {
-            Transform slot = fruitSlotsInBasket[fruitsInBasket.Count];
-            
-            if (fruitInBasketPrefab != null)
-            {
-                GameObject fruitInBasket = Instantiate(fruitInBasketPrefab, slot.position, Quaternion.identity, basketTransform);
-                SpriteRenderer sr = fruitInBasket.GetComponent<SpriteRenderer>();
-                if (sr != null && fruitSprite != null)
-                {
-                    sr.sprite = fruitSprite;
-                }
-                fruitsInBasket.Add(fruitInBasket);
-            }
-        }
-    }
+    // --- FUNCTIILE CARE LIPSEAU DIN CODUL TAU ---
 
     System.Collections.IEnumerator BasketBounceAnimation()
     {
         Vector3 originalScale = basketTransform.localScale;
         Vector3 bounceScale = originalScale * collectAnimationScale;
-        
+
         float duration = 0.15f;
         float elapsed = 0f;
 
@@ -201,7 +199,6 @@ public class FruitCollectorManager : MonoBehaviour
         }
 
         elapsed = 0f;
-
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
@@ -248,8 +245,8 @@ public class FruitCollectorManager : MonoBehaviour
         if (warningTextObject)
         {
             warningTextObject.SetActive(true);
-            CancelInvoke("HideWarning"); 
-            Invoke("HideWarning", 2.0f); 
+            CancelInvoke("HideWarning");
+            Invoke("HideWarning", 2.0f);
         }
     }
 
@@ -262,16 +259,16 @@ public class FruitCollectorManager : MonoBehaviour
     {
         currentFruits = 0;
         levelCompleted = false;
-        
+
         foreach (GameObject fruit in fruitsInBasket)
         {
             if (fruit != null)
-                Destroy(fruit);
+                Destroy(fruit); // Sau fruit.SetActive(true) si resetat pozitia daca vrei reciclare
         }
         fruitsInBasket.Clear();
-        
+
         UpdateUI();
-        
+
         if (winMessageObject) winMessageObject.SetActive(false);
         if (warningTextObject) warningTextObject.SetActive(false);
     }
