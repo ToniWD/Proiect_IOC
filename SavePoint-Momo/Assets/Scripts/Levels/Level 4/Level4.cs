@@ -149,7 +149,7 @@ public class Level4 : MonoBehaviour
             if(audioManager.audioSource.isPlaying)return;
             if (countGresit >= 2)
             {
-                StartCoroutine(PlayAudioList(new List<string> { "gresit 1", rightOption }));
+                StartCoroutine(PlayAudioList(new List<string> { "gresit 1" }, "playAgain"));
                 countGresit = 0;
             }
             else
