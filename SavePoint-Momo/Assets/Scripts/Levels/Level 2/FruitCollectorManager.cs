@@ -6,8 +6,11 @@ public class FruitCollectorManager : MonoBehaviour
 {
     [Header("Configurare Nivel")]
     public int targetFruits = 5;
-    private int currentFruits = 0;
-    private bool levelCompleted = false;
+    public int currentFruits = 0;
+    public bool levelCompleted = false;
+
+    private bool nextFeedbackIsPositive1 = true;
+    private bool isIntroPlaying = false;
 
     [Header("Referințe UI")]
     public Text counterDisplay;
@@ -35,7 +38,6 @@ public class FruitCollectorManager : MonoBehaviour
     public SpriteRenderer basketFrontRenderer;
     public SpriteRenderer basketWithPawRenderer;
 
-    // AICI ESTE LISTA PENTRU LOCURILE LIBERE
     public Transform[] fruitSlotsInBasket;
 
     [Header("Indicator Contor Coș")]
@@ -49,13 +51,40 @@ public class FruitCollectorManager : MonoBehaviour
     [Header("Prefab Fruct în Coș")]
     public GameObject fruitInBasketPrefab;
 
-    private List<GameObject> fruitsInBasket = new List<GameObject>();
+    [Header("Resurse Audio - Replici Momo")]
+    public AudioClip IntroducereInPoveste1;
+    public AudioClip IntroducereInPoveste2;
+    public AudioClip InstructiuniDeJoc1;
+    public AudioClip InstructiuniDeJoc2;
+    public AudioClip FeedbackPozitiv1;
+    public AudioClip FeedbackPozitiv2;
+    public AudioClip LevelCompletion;
+    public AudioClip FeedbackNegativ1;
+    public AudioClip FeedbackNegativ2;
 
+    [Header("Resurse Audio - FX")]
+    public AudioClip fruitSelectSound;
+    public AudioClip errorSound;
+    public AudioClip basketFullSound;
+
+    private List<GameObject> fruitsInBasket = new List<GameObject>();
     public static FruitCollectorManager Instance;
+
+    private AudioSource momoAudioSource;
 
     void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+
+        momoAudioSource = GetComponent<AudioSource>();
+
+        if (momoAudioSource == null)
+        {
+            Debug.LogError("Componenta AudioSource lipsește de pe GameObject-ul FruitCollectorManager!");
+        }
     }
 
     void Start()
@@ -64,6 +93,61 @@ public class FruitCollectorManager : MonoBehaviour
         UpdateUI();
         if (winMessageObject) winMessageObject.SetActive(false);
         if (warningTextObject) warningTextObject.SetActive(false);
+
+        StartIntroSequence();
+    }
+
+    void StartIntroSequence()
+    {
+        isIntroPlaying = true;
+        PlayMomoReplica(IntroducereInPoveste1, () =>
+            PlayMomoReplica(IntroducereInPoveste2, () =>
+                PlayMomoReplica(InstructiuniDeJoc1, () =>
+                {
+                    isIntroPlaying = false;
+                })));
+    }
+
+
+    private void PlayMomoReplica(AudioClip clip, System.Action onComplete = null)
+    {
+        if (momoAudioSource != null && clip != null)
+        {
+            if (momoAudioSource.isPlaying)
+            {
+                if (isIntroPlaying && (clip != IntroducereInPoveste1 && clip != IntroducereInPoveste2 && clip != InstructiuniDeJoc1))
+                {
+                    momoAudioSource.Stop();
+                    isIntroPlaying = false; 
+                }
+            }
+
+            momoAudioSource.clip = clip;
+            momoAudioSource.Play();
+
+            if (onComplete != null && !isIntroPlaying)
+            {
+                StartCoroutine(WaitAndExecute(clip.length, onComplete));
+            }
+        }
+        else
+        {
+            onComplete?.Invoke();
+        }
+    }
+
+    void PlayFXSound(AudioClip clip)
+    {
+        if (momoAudioSource != null && clip != null)
+        {
+            momoAudioSource.PlayOneShot(clip);
+        }
+    }
+
+    System.Collections.IEnumerator WaitAndExecute(float delay, System.Action action)
+    {
+        yield return new WaitForSeconds(delay);
+        action?.Invoke();
     }
 
     void SetupVisuals()
@@ -83,14 +167,26 @@ public class FruitCollectorManager : MonoBehaviour
 
     public void AttemptCollectFruit(GameObject fruitObject)
     {
-        if (levelCompleted) return;
+        if (levelCompleted && currentFruits >= targetFruits)
+        {
+        }
 
         if (currentFruits >= targetFruits)
         {
-            Debug.Log("Miau! Ai ales prea multe fructe. Cosul e deja plin!");
-            ShowWarning();
-            return;
+            if (currentFruits == targetFruits)
+            {
+                PlayMomoReplica(FeedbackNegativ1);
+                ShowWarning();
+            }
         }
+        else
+        {
+            AudioClip feedbackClip = nextFeedbackIsPositive1 ? FeedbackPozitiv1 : FeedbackPozitiv2;
+            PlayMomoReplica(feedbackClip);
+            nextFeedbackIsPositive1 = !nextFeedbackIsPositive1;
+        }
+
+        PlayFXSound(fruitSelectSound);
 
         currentFruits++;
 
@@ -100,20 +196,73 @@ public class FruitCollectorManager : MonoBehaviour
         AnimateFruitToBasket(fruitObject, collectedFruitSprite);
 
         UpdateUI();
-        Debug.Log("Fruct colectat! Total: " + currentFruits);
 
-        if (currentFruits == targetFruits)
+        if (currentFruits == targetFruits && !levelCompleted)
         {
             WinLevel();
         }
     }
 
+    public void RemoveFruitFromBasket(GameObject fruitObject)
+    {
+        if (fruitsInBasket.Contains(fruitObject))
+        {
+            if (currentFruits > 0)
+            {
+                int scoreBeforeRemoval = currentFruits;
+
+                ClickableFruit cf = fruitObject.GetComponent<ClickableFruit>();
+
+                currentFruits--;
+                fruitsInBasket.Remove(fruitObject);
+
+                if (cf != null)
+                {
+                    cf.ResetFruit();
+                }
+
+                UpdateUI(); 
+
+                if (scoreBeforeRemoval > targetFruits && currentFruits == targetFruits)
+                {
+                    WinLevel();
+                }
+                else if (currentFruits < targetFruits)
+                {
+                    PlayMomoReplica(FeedbackNegativ2);
+                    if (levelCompleted)
+                    {
+                        levelCompleted = false;
+                        if (winMessageObject) winMessageObject.SetActive(false);
+                    }
+                }
+
+                ReorganizeBasket();
+            }
+        }
+    }
+
+    void ReorganizeBasket()
+    {
+        for (int i = 0; i < fruitsInBasket.Count; i++)
+        {
+            GameObject fruit = fruitsInBasket[i];
+            if (i < fruitSlotsInBasket.Length)
+            {
+                fruit.transform.position = fruitSlotsInBasket[i].position;
+            }
+            ClickableFruit cf = fruit.GetComponent<ClickableFruit>();
+            if (cf != null)
+            {
+                cf.SetCollectedInBasket();
+            }
+        }
+    }
+
     void AnimateFruitToBasket(GameObject fruitObject, Sprite fruitSprite)
     {
-        // Calculam indexul (daca e primul fruct, index 0, etc.)
         int slotIndex = currentFruits - 1;
 
-        // Verificam daca avem sloturi definite in Inspector
         if (basketTransform != null && fruitSlotsInBasket != null && slotIndex < fruitSlotsInBasket.Length)
         {
             Transform targetSlot = fruitSlotsInBasket[slotIndex];
@@ -121,7 +270,6 @@ public class FruitCollectorManager : MonoBehaviour
         }
         else
         {
-            // Daca nu ai setat sloturile, fructul dispare (fallback)
             fruitObject.SetActive(false);
         }
     }
@@ -130,58 +278,55 @@ public class FruitCollectorManager : MonoBehaviour
     {
         Vector3 startPos = fruitObject.transform.position;
         Vector3 startScale = fruitObject.transform.localScale;
-
         Vector3 endPos = targetSlot.position;
-
-        // Fructul devine putin mai mic in cos (0.7 din marimea originala)
         Vector3 endScale = startScale * 0.7f;
 
-        // Oprim click-ul pe fruct ca sa nu il poti lua de doua ori
-        if (fruitObject.GetComponent<Collider2D>() != null)
+        Collider2D fruitCollider = fruitObject.GetComponent<Collider2D>();
+
+        if (fruitCollider != null)
         {
-            fruitObject.GetComponent<Collider2D>().enabled = false;
+            fruitCollider.enabled = false;
         }
 
-        // Schimbam ordinea: Stratul 1 este intre Spate (0) si Fata (2)
         if (fruitObject.GetComponent<SpriteRenderer>() != null)
         {
             fruitObject.GetComponent<SpriteRenderer>().sortingOrder = 1;
         }
 
         float elapsed = 0f;
-
         while (elapsed < fruitMoveAnimationDuration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / fruitMoveAnimationDuration;
-
-            // Miscare lina (Smooth Step)
             float smoothT = t * t * (3f - 2f * t);
 
             fruitObject.transform.position = Vector3.Lerp(startPos, endPos, smoothT);
             fruitObject.transform.localScale = Vector3.Lerp(startScale, endScale, smoothT);
-
             yield return null;
         }
 
-        // Fixam pozitia finala
         fruitObject.transform.position = endPos;
         fruitObject.transform.localScale = endScale;
 
-        // Facem fructul copil al cosului (se misca odata cu cosul)
         fruitObject.transform.SetParent(basketTransform);
-
-        // Adaugam in lista interna
         fruitsInBasket.Add(fruitObject);
 
-        // Animam cosul (salt mic)
+        if (fruitCollider != null)
+        {
+            fruitCollider.enabled = true;
+        }
+
+        ClickableFruit cf = fruitObject.GetComponent<ClickableFruit>();
+        if (cf != null)
+        {
+            cf.SetCollectedInBasket();
+        }
+
         if (basketTransform != null)
         {
             StartCoroutine(BasketBounceAnimation());
         }
     }
-
-    // --- FUNCTIILE CARE LIPSEAU DIN CODUL TAU ---
 
     System.Collections.IEnumerator BasketBounceAnimation()
     {
@@ -228,16 +373,28 @@ public class FruitCollectorManager : MonoBehaviour
         if (basketCounterText != null)
         {
             basketCounterText.text = currentFruits.ToString();
+
+            if (currentFruits > targetFruits)
+            {
+                basketCounterText.color = Color.red;
+            }
+            else
+            {
+                basketCounterText.color = Color.white;
+            }
         }
     }
 
     void WinLevel()
     {
         levelCompleted = true;
-        Debug.Log("Nivel Complet! Iepurasul e fericit.");
 
-        if (winMessageObject)
-            winMessageObject.SetActive(true);
+        PlayFXSound(basketFullSound);
+
+        PlayMomoReplica(LevelCompletion, () => {
+            Debug.Log("Nivel Complet! Iepurasul e fericit.");
+            if (winMessageObject) winMessageObject.SetActive(true);
+        });
     }
 
     void ShowWarning()
@@ -246,7 +403,8 @@ public class FruitCollectorManager : MonoBehaviour
         {
             warningTextObject.SetActive(true);
             CancelInvoke("HideWarning");
-            Invoke("HideWarning", 2.0f);
+            Invoke("HideWarning", 3.0f);
+            PlayFXSound(errorSound);
         }
     }
 
@@ -262,8 +420,11 @@ public class FruitCollectorManager : MonoBehaviour
 
         foreach (GameObject fruit in fruitsInBasket)
         {
-            if (fruit != null)
-                Destroy(fruit); // Sau fruit.SetActive(true) si resetat pozitia daca vrei reciclare
+            ClickableFruit cf = fruit.GetComponent<ClickableFruit>();
+            if (cf != null)
+            {
+                cf.ResetFruit();
+            }
         }
         fruitsInBasket.Clear();
 
