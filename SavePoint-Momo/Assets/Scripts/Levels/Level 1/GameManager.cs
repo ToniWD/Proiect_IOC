@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
         
         StopAllCoroutines();
 
-        MainGameManager.play("Level 3");
+        MainGameManager.play("Level 2");
     }
     
 }

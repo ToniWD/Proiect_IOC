@@ -204,7 +204,7 @@ public class FruitCollectorManager : MonoBehaviour
     private void PlayLevlComplectionSequence()
     {
         PlayMomoReplica(LevelCompletionpt1,()=>
-        PlayMomoReplica(nrFructe,()=>PlayMomoReplica((LevelCompletionpt2))));
+        PlayMomoReplica(nrFructe,()=>PlayMomoReplica(LevelCompletionpt2, () => { MainGameManager.play("Level 3"); })));
 
     }
 

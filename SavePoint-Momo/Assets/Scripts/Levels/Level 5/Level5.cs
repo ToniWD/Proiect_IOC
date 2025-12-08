@@ -16,15 +16,45 @@ public class Level5 : MonoBehaviour
 
     public GameObject Outcome1;
     public GameObject Outcome2;
+    public GameObject button1;
+    public GameObject button2;
 
     public GameObject final;
+
+    public AudioManager audioManger;
+
+    private void Start()
+    {
+        audioManger = GameObject.Find("AudioPlayer").GetComponent<AudioManager>();
+
+        StartCoroutine(audioManger.PlayAudioList(new List<string> { "intro", "intro optiuni 1" },
+            this.startFirstPhase
+        ));
+    }
+
+    public void startFirstPhase()
+    {
+        button1.SetActive(true);
+        StartCoroutine(audioManger.PlayAudioList(new List<string> { "intro optiuni 2" }, ()=>{ button2.SetActive(true); audioManger.PlaySingleAfterCurrent(audioManger.GetAudio("inst part 1")); }));
+    }
+
+    public void buttonsSound(AudioClip audio)
+    {
+
+        if (!audioManger.audioSource.isPlaying)
+        {
+            audioManger.PlaySingle(audio);
+        }
+    }
 
     public void choice1()
     {
         Debug.Log("Imbratisare"); 
         part1.SetActive(false);
         Outcome1.SetActive(true);
-        Invoke("startSecondPhase", 8f);
+        StartCoroutine(audioManger.PlayAudioList(new List<string> { "final part 1" },
+            () => { Invoke("startSecondPhase", 1.5f); }
+        ));
     }
 
     public void choice2()
@@ -32,7 +62,9 @@ public class Level5 : MonoBehaviour
         Debug.Log("Jucarie");
         part1.SetActive(false);
         Outcome2.SetActive(true);
-        Invoke("startSecondPhase", 8f);
+        StartCoroutine(audioManger.PlayAudioList(new List<string> { "final part 1" },
+            () => { Invoke("startSecondPhase",1.5f); }
+        ));
     }
 
 
@@ -42,15 +74,18 @@ public class Level5 : MonoBehaviour
         Outcome2.SetActive(false);
         part1.SetActive(false);
         part2.SetActive(true);
-        Clickable.startGame = true;
+
+        StartCoroutine(audioManger.PlayAudioList(new List<string> { "intro part 2", "inst part 2" },
+            () => { Clickable.startGame = true; }
+        ));
     }
 
-    public void found(int i, GameObject obj)
+    public int found(int i, GameObject obj)
     {
         if (i != 1)
         {
             error();
-            return;
+            return 0;
         }
         count++;
 
@@ -63,8 +98,15 @@ public class Level5 : MonoBehaviour
             part2.SetActive(false);
             final.SetActive(true);
             Debug.Log("Finish---------------------");
-            Invoke("finish", 8f);
+
+            StartCoroutine(audioManger.PlayAudioList(new List<string> { "final part 2", "final part 2.2" },
+            () => { Invoke("finish", 1.5f); }
+            ));
+
+            return 1;
         }
+
+        return -1;
     }
 
     private void finish()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -54,5 +55,18 @@ public class AudioManager : MonoBehaviour
 
         audioSource.clip = clip;
         audioSource.Play();
+    }
+
+    public IEnumerator PlayAudioList(List<string> list, Action callback = null)
+    {
+        if (audioSource.isPlaying) yield return null;
+        foreach (var item in list)
+        {
+            var clip1 = GetAudio(item);
+            audioSource.PlayOneShot(clip1);
+            yield return new WaitForSeconds(clip1.length);
+        }
+
+        if (callback != null) callback();
     }
 }

@@ -22,10 +22,25 @@ public class Clickable : MonoBehaviour
     {
         if (!startGame || found) return;
 
-        mainSc.found(cod, this.gameObject);
+        int a = mainSc.found(cod, this.gameObject);
 
-        if(cod!=1)GetComponent<SpriteRenderer>().color = Color.red;
-        else GetComponent<SpriteRenderer>().color = Color.green;
+        if (cod != 1) GetComponent<SpriteRenderer>().color = Color.red;
+        else
+        {
+            var audio = GameObject.Find("AudioPlayer").GetComponent<AudioManager>();
+            GetComponent<SpriteRenderer>().color = Color.green;
+            if (a != 1 && !audio.audioSource.isPlaying)
+            {
+                if (Random.value > 0.5f)
+                {
+                    audio.PlaySingleAfterCurrent(audio.GetAudio("fruct gasit 1"));
+                }
+                else
+                {
+                    audio.PlaySingleAfterCurrent(audio.GetAudio("fruct gasit 2"));
+                }
+            }
+        }
 
         found = true;
         Debug.Log("Click");

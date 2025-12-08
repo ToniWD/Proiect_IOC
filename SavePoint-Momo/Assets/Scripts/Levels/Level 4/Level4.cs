@@ -109,14 +109,16 @@ public class Level4 : MonoBehaviour
 
         rightOption = name;
 
-        audioManager.audioSource.PlayOneShot(audioManager.GetAudio(rightOption));
+        if(rightOption == "urs") audioManager.audioSource.PlayOneShot(audioManager.GetAudio(rightOption), 0.05f);
+        else audioManager.audioSource.PlayOneShot(audioManager.GetAudio(rightOption));
     }
 
     public void playAgain()
     {
         if (rightOption.Length > 0)
         {
-            audioManager.audioSource.PlayOneShot(audioManager.GetAudio(rightOption));
+            if (rightOption == "urs") audioManager.audioSource.PlayOneShot(audioManager.GetAudio(rightOption), 0.05f);
+            else audioManager.audioSource.PlayOneShot(audioManager.GetAudio(rightOption));
         }
     }
 
