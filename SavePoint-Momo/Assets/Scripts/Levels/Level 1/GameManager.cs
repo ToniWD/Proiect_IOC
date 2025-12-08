@@ -9,8 +9,9 @@ public class GameManager : MonoBehaviour
     public AudioClip endGameClip;
     
     public AudioSource audioSourceIntro;  
-    public AudioClip introClip;         
-    public AudioClip rulesClip; 
+    public AudioClip introClip;
+
+    public AudioClip[] rulesClips;
     
     
     public AudioClip audioSourceTriangle;
@@ -59,10 +60,11 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(PlayIntroAndRules());
     }
-    
+
 
     private System.Collections.IEnumerator PlayIntroAndRules()
     {
+    
         if (introPanel != null)
             introPanel.SetActive(true);
 
@@ -71,11 +73,17 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(introClip.length + 0.2f);
 
-        if (audioSourceIntro != null && rulesClip != null)
-            audioSourceIntro.PlayOneShot(rulesClip);
 
-        yield return new WaitForSeconds(rulesClip.length - 1f);
+        foreach (var clip in rulesClips)
+        {
+            if (clip != null)
+            {
+                audioSourceIntro.PlayOneShot(clip);
+                yield return new WaitForSeconds(clip.length + 0.2f);
+            }
+        }
 
+        
         if (introPanel != null)
             introPanel.SetActive(false);
 
@@ -87,6 +95,7 @@ public class GameManager : MonoBehaviour
 
         isGameOver = false;
     }
+
 
 
     private void EndGame()

@@ -23,10 +23,9 @@ public class TriangleClick : MonoBehaviour
         int fish = Random.Range(0, triangles.Length);
         sr.sprite = triangles[fish];
 
-        if (sr.sprite.name.Contains("blue"))
-        {
+       
             isDestroyable = true;
-        }
+        
     }
 
     public void ForceClickable()
