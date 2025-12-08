@@ -115,15 +115,22 @@ public class ShapeGenerator : MonoBehaviour
             int randomX = Random.value < 0.5f ? -1 : 1;
             go.transform.localScale = new Vector3(randomX, 1f, 1f);
 
+            // dacă e triunghi, folosește TriangleClick
             if (go.CompareTag("Triangle"))
             {
-                blueCount += go.GetComponent<TriangleClick>().isDestroyable? 1 :0;
+                blueCount += go.GetComponent<TriangleClick>().isDestroyable ? 1 : 0;
+            }
+            else
+            {
+                // dacă are UnclickableFish și e albastru (isDestroyable), îl numărăm
+                UnclickableFish uf = go.GetComponent<UnclickableFish>();
+                if (uf != null && uf.isDestroyable)
+                {
+                    blueCount++;
+                }
             }
         }
-        else
-        {
-            Debug.LogWarning("Nu s-a găsit loc liber pentru obiect.");
-        }
+
     }
-    
+
 }
