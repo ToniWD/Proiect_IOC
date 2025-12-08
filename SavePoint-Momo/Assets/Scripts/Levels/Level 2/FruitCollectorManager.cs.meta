@@ -1,2 +1,28 @@
 fileFormatVersion: 2
 guid: 4b7e637f799abea40b20e6c57a8aabbd
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - counterDisplay: {instanceID: 0}
+  - winMessageObject: {instanceID: 0}
+  - warningTextObject: {instanceID: 0}
+  - basketBackSprite: {fileID: -8607851445405403238, guid: d0bfa23d3ffbf834eb2952028bd94d5a, type: 3}
+  - basketFrontSprite: {fileID: -6360083197670842141, guid: c119967226676ad439956851597f71d2, type: 3}
+  - basketRefSprite: {fileID: -8475517452807243195, guid: 63d5026794308d14181d0caf7137e927, type: 3}
+  - basketWithPawSprite: {fileID: 8872018487429636734, guid: e20a15ce3e340144085e3f733bb2b78c, type: 3}
+  - backgroundMainSprite: {fileID: -3927201247764351937, guid: f67f2726347a3a74889c6c6885e92d43, type: 3}
+  - backgroundSearchingSprite: {fileID: -4134889415511503264, guid: e9d4aadb2a39c244999501b7eab82377, type: 3}
+  - backgroundRenderer: {instanceID: 0}
+  - basketTransform: {instanceID: 0}
+  - basketBackRenderer: {instanceID: 0}
+  - basketFrontRenderer: {instanceID: 0}
+  - basketWithPawRenderer: {instanceID: 0}
+  - basketIndicatorImage: {instanceID: 0}
+  - basketCounterText: {instanceID: 0}
+  - fruitInBasketPrefab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
