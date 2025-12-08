@@ -130,7 +130,9 @@ public class Level4 : MonoBehaviour
             Debug.Log("Corect");
             meniu.SetActive(false);
 
-            StartCoroutine(PlayAudioList(new List<string> { rightOption, rightOption + " fact" }, "restartMenu"));
+            if (rightOption == "urs") StartCoroutine(PlayAudioList(new List<string> { rightOption + " fact" }, "restartMenu"));
+            else StartCoroutine(PlayAudioList(new List<string> { rightOption, rightOption + " fact" }, "restartMenu"));
+
             foreach (var pair in options)
             {
                 if(pair.key == option)

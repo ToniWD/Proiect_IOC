@@ -12,6 +12,8 @@ public class MainGameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            var audio = GameObject.Find("AudioPlayer").GetComponent<AudioManager>();
+            audio.PlaySingle(audio.GetAudio("intro"));
             DontDestroyOnLoad(gameObject);
         }
         else
