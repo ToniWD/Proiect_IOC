@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class ShapeGenerator : MonoBehaviour
 {
+    public static ShapeGenerator instance;
+    
     public GameObject trianglePrefab;
     public GameObject circlePrefab;
     public GameObject squarePrefab;
@@ -12,7 +14,15 @@ public class ShapeGenerator : MonoBehaviour
     public int maxAttempts = 50;
     public int blueCount = 0;
 
-    void Start()
+    [SerializeField]
+    private Transform spawnLocation;
+    
+    private void Awake()
+    {
+        instance = this;
+    }
+    
+    public void SpawnFish()
     {
         for (int i = 0; i < numberOfShapes; i++)
         {
