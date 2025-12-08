@@ -14,6 +14,7 @@ public class Draggable : MonoBehaviour
     public float snapDistance = 0.3f;
     [Header("Events")]
     public UnityEvent doAfterSnap;
+    public UnityEvent doOnEnter;
     public Vector3 snapPoz;
     private Vector3 offset;
 
@@ -24,6 +25,7 @@ public class Draggable : MonoBehaviour
         {
             mat.SetFloat("_OutlineWidth", 7f);
         }
+        doOnEnter?.Invoke();
     }
 
     private void OnMouseExit()
