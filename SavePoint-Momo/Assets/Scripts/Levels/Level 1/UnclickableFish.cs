@@ -3,6 +3,9 @@ using UnityEngine.InputSystem;
 
 public class UnclickableFish : MonoBehaviour
 {
+    
+    public AudioSource audioSource;
+
     private SpriteRenderer sr;
     public Sprite[] spriteOptions;
     
@@ -35,6 +38,11 @@ public class UnclickableFish : MonoBehaviour
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 StartCoroutine(Shake());
+                
+                GameManager.instance.StopAllSounds();
+                GameManager.instance.generalAudioSource.PlayOneShot(GameManager.instance.audioSourceWrong);
+
+
             }
         }
     }

@@ -5,6 +5,25 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public bool isGameOver;
     
+    public AudioSource audioSourceEnd;
+    public AudioClip endGameClip;
+    
+    public AudioSource audioSourceIntro;  
+    public AudioClip introClip;         
+    public AudioClip rulesClip; 
+    
+    
+    public AudioClip audioSourceTriangle;
+    public AudioClip audioSourceWrong;
+    
+    
+    public AudioSource generalAudioSource;
+    
+    [SerializeField]
+    private GameObject introPanel; 
+    [SerializeField]
+    private GameObject gamePanel;
+    
     private int triangleCount = 0;
     [SerializeField]
     private ShapeGenerator shapeGenerator;
@@ -18,6 +37,12 @@ public class GameManager : MonoBehaviour
             mainCamera = Camera.main;
     }
 
+    public void StopAllSounds()
+    {
+        generalAudioSource.Stop();
+        
+    }
+
     public void RemoveTriangle()
     {
         triangleCount++;
@@ -27,12 +52,63 @@ public class GameManager : MonoBehaviour
             EndGame();
         }
     }
+    
+    private void Start()
+    {
+        isGameOver = true;
+
+        StartCoroutine(PlayIntroAndRules());
+    }
+    
+
+    private System.Collections.IEnumerator PlayIntroAndRules()
+    {
+        if (introPanel != null)
+            introPanel.SetActive(true);
+
+        if (audioSourceIntro != null && introClip != null)
+            audioSourceIntro.PlayOneShot(introClip);
+
+        yield return new WaitForSeconds(introClip.length + 0.2f);
+
+        if (audioSourceIntro != null && rulesClip != null)
+            audioSourceIntro.PlayOneShot(rulesClip);
+
+        yield return new WaitForSeconds(rulesClip.length - 1f);
+
+        if (introPanel != null)
+            introPanel.SetActive(false);
+
+        if (gamePanel != null)
+        {
+            ShapeGenerator.instance.SpawnFish();
+            gamePanel.SetActive(true);
+        }
+
+        isGameOver = false;
+    }
+
 
     private void EndGame()
     {
         isGameOver = true;
         Debug.Log("Ai câștigat! Nu mai sunt triunghiuri!");
-        //Time.timeScale = 0f;
+        
+        
+        if (audioSourceEnd != null && endGameClip != null)
+        {
+            StopAllSounds();
+            
+            generalAudioSource.PlayOneShot(endGameClip);
+        }
+
+        StartCoroutine(LoadNextLevelAfterSound());
+    }
+    
+    private System.Collections.IEnumerator LoadNextLevelAfterSound()
+    {
+        yield return new WaitForSeconds(endGameClip.length);
+        
         StopAllCoroutines();
 
         MainGameManager.play("Level 3");
