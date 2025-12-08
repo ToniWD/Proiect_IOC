@@ -485,7 +485,6 @@ MonoBehaviour:
   highlightColor: {r: 1, g: 1, b: 0.5, a: 1}
   hoverScale: 1.15
   useRandomSprite: 1
-  fruits: {fileID: 0}
 --- !u!212 &381506697
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -629,7 +628,6 @@ MonoBehaviour:
   highlightColor: {r: 1, g: 1, b: 0.5, a: 1}
   hoverScale: 1.15
   useRandomSprite: 1
-  fruits: {fileID: 0}
 --- !u!212 &475931886
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -737,7 +735,6 @@ MonoBehaviour:
   highlightColor: {r: 1, g: 1, b: 0.5, a: 1}
   hoverScale: 1.15
   useRandomSprite: 1
-  fruits: {fileID: 0}
 --- !u!58 &563342314
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1064,7 +1061,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.0119, y: 0.0711, z: 0}
-  m_LocalScale: {x: 0.9181227, y: 0.90316206, z: 1}
+  m_LocalScale: {x: 0.93, y: 0.94, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1251,7 +1248,6 @@ MonoBehaviour:
   highlightColor: {r: 1, g: 1, b: 0.5, a: 1}
   hoverScale: 1.15
   useRandomSprite: 1
-  fruits: {fileID: 0}
 --- !u!212 &976180315
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2028,7 +2024,6 @@ MonoBehaviour:
   highlightColor: {r: 1, g: 1, b: 0.5, a: 1}
   hoverScale: 1.15
   useRandomSprite: 1
-  fruits: {fileID: 0}
 --- !u!58 &1467241666
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2245,7 +2240,6 @@ MonoBehaviour:
   highlightColor: {r: 1, g: 1, b: 0.5, a: 1}
   hoverScale: 1.15
   useRandomSprite: 1
-  fruits: {fileID: 0}
 --- !u!58 &1566105598
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2760,7 +2754,6 @@ MonoBehaviour:
   highlightColor: {r: 1, g: 1, b: 0.5, a: 1}
   hoverScale: 1.15
   useRandomSprite: 1
-  fruits: {fileID: 0}
 --- !u!58 &1770914345
 CircleCollider2D:
   m_ObjectHideFlags: 0
