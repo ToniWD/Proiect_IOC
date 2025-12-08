@@ -16,6 +16,8 @@ public class ClickableFruit : MonoBehaviour
     private bool isHovered = false;
     private bool isCollected = false;
 
+    private Transform originalParent;
+
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -34,7 +36,8 @@ public class ClickableFruit : MonoBehaviour
     }
 
     void Start()
-    {
+    {   
+        originalParent = transform.parent;
         if (useRandomSprite && FruitCollectorManager.Instance != null && !isInBasket)
         {
             Sprite randomSprite = FruitCollectorManager.Instance.GetRandomFruitSprite();
@@ -121,7 +124,7 @@ public class ClickableFruit : MonoBehaviour
         isHovered = false;
         isInBasket = false;
 
-        transform.SetParent(null);
+        transform.SetParent(originalParent); 
         transform.position = initialPosition;
         transform.localScale = originalScale;
 
