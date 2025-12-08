@@ -369,9 +369,9 @@ MonoBehaviour:
   endGameClip: {fileID: 8300000, guid: f373985094e3d454b95461c68780f5ec, type: 3}
   audioSourceIntro: {fileID: 687971286}
   introClip: {fileID: 8300000, guid: a9dc9794eeeaa694ba295dcc3b59cef1, type: 3}
-  rulesClip: {fileID: 8300000, guid: 2d0679317655d4d41af54f510ca03767, type: 3}
+  rulesClip: {fileID: 8300000, guid: d5b311d4f7a8942428785354c9b32d9f, type: 3}
   audioSourceTriangle: {fileID: 8300000, guid: 996b8bae7ba813d42ad8036c730f4ffe, type: 3}
-  audioSourceWrong: {fileID: 8300000, guid: 8e18bf712afcb5447bd2d7ffd9d6fb1c, type: 3}
+  audioSourceWrong: {fileID: 8300000, guid: fa0fd478d56f60f4eb18838e6e8db33c, type: 3}
   generalAudioSource: {fileID: 687971287}
   introPanel: {fileID: 1381338283}
   gamePanel: {fileID: 1977110860}
