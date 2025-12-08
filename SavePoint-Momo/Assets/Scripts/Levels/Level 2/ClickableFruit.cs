@@ -3,15 +3,13 @@
 public class ClickableFruit : MonoBehaviour
 {
     [Header("Configurare Vizuală")]
-    [Tooltip("Culoarea highlight când mouse-ul e deasupra")]
     public Color highlightColor = new Color(1f, 1f, 0.5f, 1f);
-    
-    [Tooltip("Scala la hover")]
     public float hoverScale = 1.15f;
-    
-    [Tooltip("Dacă e true, fructul primește un sprite random la start")]
     public bool useRandomSprite = true;
 
+    private Vector3 initialPosition;
+
+    private bool isInBasket = false;
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
     private Vector3 originalScale;
@@ -26,11 +24,18 @@ public class ClickableFruit : MonoBehaviour
             originalColor = spriteRenderer.color;
         }
         originalScale = transform.localScale;
+
+        initialPosition = transform.position;
+
+        if (transform.parent != null && transform.parent.name.Contains("Cos_total"))
+        {
+            isInBasket = true;
+        }
     }
 
     void Start()
     {
-        if (useRandomSprite && FruitCollectorManager.Instance != null)
+        if (useRandomSprite && FruitCollectorManager.Instance != null && !isInBasket)
         {
             Sprite randomSprite = FruitCollectorManager.Instance.GetRandomFruitSprite();
             if (randomSprite != null && spriteRenderer != null)
@@ -40,47 +45,72 @@ public class ClickableFruit : MonoBehaviour
         }
     }
 
+    public void SetCollectedInBasket()
+    {
+        isCollected = true;
+        isInBasket = true;
+
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = originalColor;
+        }
+        transform.localScale = originalScale * 0.7f;
+    }
+
+
     void OnMouseEnter()
     {
         if (isCollected) return;
-        
+
         isHovered = true;
-        
+
         if (spriteRenderer != null)
         {
-            spriteRenderer.color = highlightColor;
+            if (!isInBasket)
+            {
+                spriteRenderer.color = highlightColor;
+            }
         }
-        
+
         transform.localScale = originalScale * hoverScale;
     }
 
     void OnMouseExit()
     {
         if (isCollected) return;
-        
+
         isHovered = false;
-        
+
         if (spriteRenderer != null)
         {
             spriteRenderer.color = originalColor;
         }
-        
+
         transform.localScale = originalScale;
     }
 
     void OnMouseDown()
     {
-        if (isCollected) return;
-        
-        if (FruitCollectorManager.Instance != null)
+        if (FruitCollectorManager.Instance == null) return;
+
+        if (isInBasket)
         {
-            isCollected = true;
-            
+            FruitCollectorManager.Instance.RemoveFruitFromBasket(this.gameObject);
+        }
+        else 
+        {
+            if (isCollected) return;
+
+            if (!FruitCollectorManager.Instance.levelCompleted || FruitCollectorManager.Instance.currentFruits < FruitCollectorManager.Instance.targetFruits)
+            {
+                isCollected = true;
+            }
+
             if (spriteRenderer != null)
             {
                 spriteRenderer.color = originalColor;
             }
-            
+
             FruitCollectorManager.Instance.AttemptCollectFruit(this.gameObject);
         }
     }
@@ -89,12 +119,23 @@ public class ClickableFruit : MonoBehaviour
     {
         isCollected = false;
         isHovered = false;
-        
+        isInBasket = false;
+
+        transform.SetParent(null);
+        transform.position = initialPosition;
+        transform.localScale = originalScale;
+
         if (spriteRenderer != null)
         {
             spriteRenderer.color = originalColor;
         }
-        transform.localScale = originalScale;
+
         gameObject.SetActive(true);
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+        {
+            col.enabled = true;
+        }
     }
 }
