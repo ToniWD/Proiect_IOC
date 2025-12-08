@@ -1,10 +1,13 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Level4 : MonoBehaviour
 {
     public GameObject meniu;
+
+    public AudioManager audioManager;
 
     public List<StringGameObjectPair> options;
     [Serializable]
@@ -23,6 +26,8 @@ public class Level4 : MonoBehaviour
 
     private void Start()
     {
+        audioManager = GameObject.Find("AudioPlayer").GetComponent<AudioManager>();
+
         indices = new List<int>();
         for (int i = 0; i < options.Count; i++)
             indices.Add(i);
@@ -34,6 +39,20 @@ public class Level4 : MonoBehaviour
             indices[i] = indices[j];
             indices[j] = temp;
         }
+
+        StartCoroutine(startLevel());
+    }
+
+    IEnumerator startLevel()
+    {
+        var clip1 = audioManager.GetAudio("intro");
+        audioManager.audioSource.PlayOneShot(clip1);
+        yield return new WaitForSeconds(clip1.length);
+
+        clip1 = audioManager.GetAudio("inst");
+        audioManager.audioSource.PlayOneShot(clip1);
+        yield return new WaitForSeconds(clip1.length);
+
 
         play();
     }
@@ -47,10 +66,24 @@ public class Level4 : MonoBehaviour
         else
         {
             Debug.Log("Finish -------------------------------------");
-
-            MainGameManager.play("Level 5");
+            StartCoroutine(finishLevel());
+            
         }
         index++;
+    }
+
+    IEnumerator finishLevel()
+    {
+        var clip1 = audioManager.GetAudio("final");
+        audioManager.audioSource.PlayOneShot(clip1);
+        yield return new WaitForSeconds(clip1.length);
+
+        clip1 = audioManager.GetAudio("continua");
+        audioManager.audioSource.PlayOneShot(clip1);
+        yield return new WaitForSeconds(clip1.length);
+
+
+        MainGameManager.play("Level 5");
     }
 
     private void playSoundfor(string name)
@@ -75,21 +108,33 @@ public class Level4 : MonoBehaviour
         }
 
         rightOption = name;
+
+        audioManager.audioSource.PlayOneShot(audioManager.GetAudio(rightOption));
     }
 
+    public void playAgain()
+    {
+        if (rightOption.Length > 0)
+        {
+            audioManager.audioSource.PlayOneShot(audioManager.GetAudio(rightOption));
+        }
+    }
+
+    private int countGresit = 0;
     public void choseOption(string option)
     {
         if(rightOption == option)
         {
             Debug.Log("Corect");
             meniu.SetActive(false);
+
+            StartCoroutine(PlayAudioList(new List<string> { rightOption, rightOption + " fact" }, "restartMenu"));
             foreach (var pair in options)
             {
                 if(pair.key == option)
                 {
                     pair.value.SetActive(true);
                     oldOpt = pair.value;
-                    Invoke("restMenu", 8f);
                     return;
                 }
             }
@@ -97,10 +142,34 @@ public class Level4 : MonoBehaviour
         else
         {
             Debug.Log("Gresit");
+            if(audioManager.audioSource.isPlaying)return;
+            if (countGresit >= 2)
+            {
+                StartCoroutine(PlayAudioList(new List<string> { "gresit 1", rightOption }));
+                countGresit = 0;
+            }
+            else
+            {
+                audioManager.audioSource.PlayOneShot(audioManager.GetAudio("gresit 2"));
+                countGresit++;
+            }
         }
     }
 
-    public void restMenu()
+    IEnumerator PlayAudioList(List<string> list, string invoke = "")
+    {
+        if (audioManager.audioSource.isPlaying) yield return null;
+        foreach (var item in list)
+        {
+            var clip1 = audioManager.GetAudio(item);
+            audioManager.audioSource.PlayOneShot(clip1);
+            yield return new WaitForSeconds(clip1.length);
+        }
+
+        if(invoke.Length > 0) Invoke(invoke, 2f);
+    }
+
+    public void restartMenu()
     {
         oldOpt.SetActive(false);
         oldOpt = null;
