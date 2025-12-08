@@ -3,14 +3,18 @@ using UnityEngine.InputSystem;
 
 public class TriangleClick : MonoBehaviour
 {
+    
+    public AudioSource audioSourceNegative;
+    public AudioSource audioSourcePositive;
+
     private SpriteRenderer sr;
     public Sprite[] triangles;
     public Sprite clickableSprite;
     public bool isDestroyable;
     private string spriteName;
     
-    public float duration = 0.1f;        // How long it shakes
-    public float magnitude = 0.01f;     // How strong the shake is
+    public float duration = 0.1f;        
+    public float magnitude = 0.01f;     
     
     void Awake()
     {
@@ -51,17 +55,43 @@ public class TriangleClick : MonoBehaviour
                 if (isDestroyable)
                 {
                     Debug.Log("Clicked " + gameObject.name);
-                
-                    Destroy(gameObject);
+                    
+                    GameManager.instance.StopAllSounds();
+                    GameManager.instance.generalAudioSource.PlayOneShot(GameManager.instance.audioSourceTriangle);
+                    
                     GameManager.instance.RemoveTriangle();
+                    
+                    Destroy(gameObject);
+                    
+                    
                 }
                 else
                 {
                     StartCoroutine(Shake());
+                    
+                    
+                    GameManager.instance.StopAllSounds();
+                    GameManager.instance.generalAudioSource.PlayOneShot(GameManager.instance.audioSourceWrong);
                 }
             }
         }
     }
+    
+    private System.Collections.IEnumerator PlaySoundAndDestroy()
+    {
+        sr.enabled = false;
+        GetComponent<Collider2D>().enabled = false;
+
+        GameManager.instance.RemoveTriangle();
+
+        audioSourcePositive.PlayOneShot(audioSourcePositive.clip);
+
+        yield return new WaitForSeconds(audioSourcePositive.clip.length);
+
+        Destroy(gameObject);
+    }
+
+
     
     private System.Collections.IEnumerator Shake()
     {
@@ -79,6 +109,6 @@ public class TriangleClick : MonoBehaviour
             yield return null;
         }
 
-        transform.localPosition = originalPos; // Reset
+        transform.localPosition = originalPos;
     }
 }
