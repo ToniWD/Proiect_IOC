@@ -373,7 +373,8 @@ MonoBehaviour:
   audioSourceTriangle: {fileID: 8300000, guid: 996b8bae7ba813d42ad8036c730f4ffe, type: 3}
   audioSourceWrong: {fileID: 8300000, guid: 8e18bf712afcb5447bd2d7ffd9d6fb1c, type: 3}
   generalAudioSource: {fileID: 687971287}
-  introPanel: {fileID: 0}
+  introPanel: {fileID: 1381338283}
+  gamePanel: {fileID: 1977110860}
   shapeGenerator: {fileID: 687971282}
   mainCamera: {fileID: 1451051121}
 --- !u!4 &687971284
