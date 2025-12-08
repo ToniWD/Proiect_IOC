@@ -17,6 +17,24 @@ public class Draggable : MonoBehaviour
     public Vector3 snapPoz;
     private Vector3 offset;
 
+    private void OnMouseEnter()
+    {
+        Material mat = GetComponent<SpriteRenderer>().material;
+        if (mat.HasProperty("_OutlineWidth"))
+        {
+            mat.SetFloat("_OutlineWidth", 7f);
+        }
+    }
+
+    private void OnMouseExit()
+    {
+        Material mat = GetComponent<SpriteRenderer>().material;
+        if (mat.HasProperty("_OutlineWidth"))
+        {
+            mat.SetFloat("_OutlineWidth", 0f);
+        }
+    }
+
     void OnMouseDown()
     {
         if (!dragOn) return;
@@ -24,7 +42,7 @@ public class Draggable : MonoBehaviour
         offset = transform.position - new Vector3(mousePos.x, mousePos.y, transform.position.z);
         isDragging = true;
 
-        this.GetComponent<SpriteRenderer>().sortingOrder = 2;
+            this.GetComponent<SpriteRenderer>().sortingOrder += 3;
     }
 
     void OnMouseDrag()
@@ -49,7 +67,7 @@ public class Draggable : MonoBehaviour
     {
         if (!dragOn) return;
 
-        this.GetComponent<SpriteRenderer>().sortingOrder = 1;
+        this.GetComponent<SpriteRenderer>().sortingOrder -= 3;
 
         if (snap && Vector3.Distance(transform.position, snapPoz) <= snapDistance) doAfterSnap?.Invoke();
         isDragging = false;
