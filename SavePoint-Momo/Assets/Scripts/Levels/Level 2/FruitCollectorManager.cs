@@ -360,61 +360,9 @@ public class FruitCollectorManager : MonoBehaviour
         }
     }
 
-    public void RemoveFruitFromBasket(GameObject fruitObject)
-    {
-        if (fruitsInBasket.Contains(fruitObject))
-        {
-            if (currentFruits > 0)
-            {
-                int scoreBeforeRemoval = currentFruits;
+  
 
-                ClickableFruit cf = fruitObject.GetComponent<ClickableFruit>();
-
-                currentFruits--;
-                fruitsInBasket.Remove(fruitObject);
-
-                if (cf != null)
-                {
-                    cf.ResetFruit();
-                }
-
-                UpdateUI(); 
-
-                if (scoreBeforeRemoval > targetFruits && currentFruits == targetFruits)
-                {
-                    WinLevel();
-                }
-                else if (currentFruits < targetFruits)
-                {
-                    PlayMomoReplica(FeedbackNegativ2);
-                    if (levelCompleted)
-                    {
-                        levelCompleted = false;
-                        if (winMessageObject) winMessageObject.SetActive(false);
-                    }
-                }
-
-                ReorganizeBasket();
-            }
-        }
-    }
-
-    void ReorganizeBasket()
-    {
-        for (int i = 0; i < fruitsInBasket.Count; i++)
-        {
-            GameObject fruit = fruitsInBasket[i];
-            if (i < fruitSlotsInBasket.Length)
-            {
-                fruit.transform.position = fruitSlotsInBasket[i].position;
-            }
-            ClickableFruit cf = fruit.GetComponent<ClickableFruit>();
-            if (cf != null)
-            {
-                cf.SetCollectedInBasket();
-            }
-        }
-    }
+ 
 
     void AnimateFruitToBasket(GameObject fruitObject, Sprite fruitSprite)
     {
