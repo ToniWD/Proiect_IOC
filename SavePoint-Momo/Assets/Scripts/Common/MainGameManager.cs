@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,7 +14,8 @@ public class MainGameManager : MonoBehaviour
         {
             instance = this;
             var audio = GameObject.Find("AudioPlayer").GetComponent<AudioManager>();
-            audio.PlaySingle(audio.GetAudio("intro"));
+
+            StartCoroutine(audio.PlayAudioList(new List<string> { "intro", "hint replay instr", "start instr 2" }));
             DontDestroyOnLoad(gameObject);
         }
         else

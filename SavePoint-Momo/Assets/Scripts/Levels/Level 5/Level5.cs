@@ -111,7 +111,7 @@ public class Level5 : MonoBehaviour
 
     private void finish()
     {
-        MainGameManager.play("Menu");
+        MainGameManager.play("Level 6");
     }
 
     public void error()
