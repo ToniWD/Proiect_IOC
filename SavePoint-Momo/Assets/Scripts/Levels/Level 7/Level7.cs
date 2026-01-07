@@ -150,7 +150,7 @@ public class Level7 : MonoBehaviour
         {
             //final
 
-            StartCoroutine(audioManager.PlayAudioList(new List<string> { "final", "final 2" }, () => { MainGameManager.play("Menu"); }));
+            StartCoroutine(audioManager.PlayAudioList(new List<string> { "final", "final 2" }, () => { MainGameManager.play("Level 9"); }));
             ClickGameObject.stop = true;
             Debug.Log("Final -------------------");
         }

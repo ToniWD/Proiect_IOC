@@ -15,7 +15,7 @@ public class MainGameManager : MonoBehaviour
             instance = this;
             var audio = GameObject.Find("AudioPlayer").GetComponent<AudioManager>();
 
-            StartCoroutine(audio.PlayAudioList(new List<string> { "intro", "hint replay instr", "start instr 2" }));
+            StartCoroutine(audio.PlayAudioList(new List<string> { "intro", /*"hint replay instr",*/ "start instr 2" }));
             DontDestroyOnLoad(gameObject);
         }
         else

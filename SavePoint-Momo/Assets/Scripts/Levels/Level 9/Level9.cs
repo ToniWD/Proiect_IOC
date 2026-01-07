@@ -132,7 +132,7 @@ public class Level9 : MonoBehaviour
         yield return StartCoroutine(audioManager.PlayAudioList(new List<string> { "04-verde-corect" }));
 
         // "Ai fost un ghid grozav! Am trecut strada în siguranță."
-        yield return StartCoroutine(audioManager.PlayAudioList(new List<string> { "09-ai-fost-un-ghid-grozav" }));
+        yield return StartCoroutine(audioManager.PlayAudioList(new List<string> { "09-ai-fost-un-ghid-grozav" }, () => { MainGameManager.play("Final"); }));
     }
 
     IEnumerator AnimateAndMoveCharacter()
