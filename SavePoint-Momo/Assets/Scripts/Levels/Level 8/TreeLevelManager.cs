@@ -1,6 +1,6 @@
-﻿using System.Collections; // <--- LINIE NOUA OBLIGATORIE PENTRU "WAIT"
+﻿using System.Collections;
 using TMPro;
-using UnityEngine;  
+using UnityEngine;
 
 public enum SeasonType
 {
@@ -16,22 +16,21 @@ public class TreeLevelManager : MonoBehaviour
     public static TreeLevelManager Instance;
 
     [Header("Setari Joc")]
-    public int itemsNeededToWin = 5;
+    public int itemsNeededToWin = 4; // Atentie: In inspector ai pus 4!
 
-    private bool springDone = false;
-    private bool summerDone = false;
-    private bool autumnDone = false;
-    private bool currentStageFinished = false;
+    // Variabile de stare
+    public bool springDone = false;
+    public bool summerDone = false;
+    public bool autumnDone = false;
+    public bool currentStageFinished = false;
 
-    [Header("Audio Clips (Trage fisierele aici)")]
+    [Header("Audio Clips")]
     public AudioSource audioSource;
-    public AudioClip sunetPovesteStart; // <--- AICI PUNEM "NIVEL 8 START"
-    public AudioClip instructiuniStart; // "nivel 8 instructiuni"
+    public AudioClip sunetPovesteStart;
+    public AudioClip instructiuniStart;
     public AudioClip sunetSucces;
     public AudioClip sunetEroare;
     public AudioClip sunetFinal;
-
-    [Header("Sunete Anotimpuri")]
     public AudioClip sunetPrimavara;
     public AudioClip sunetVara;
     public AudioClip sunetToamna;
@@ -41,8 +40,6 @@ public class TreeLevelManager : MonoBehaviour
     public Transform decorationsContainer;
     public GameObject messagePanel;
     public TMP_Text messageText;
-
-    [Header("Fundaluri")]
     public GameObject springBG;
     public GameObject summerBG;
     public GameObject autumnBG;
@@ -51,74 +48,80 @@ public class TreeLevelManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        Debug.Log("Scriptul TreeLevelManager a pornit!"); // VERIFICARE 1
     }
 
     void Start()
     {
+        Debug.Log("Start Level - Setam Primavara"); // VERIFICARE 2
         ChangeSeason(SeasonType.Spring);
-
-        // Pornim secventa de start (Poveste -> Asteptare -> Instructiuni)
         StartCoroutine(PlayStartSequence());
     }
 
-    // Aceasta este functia speciala care stie sa astepte
-    IEnumerator PlayStartSequence()
+    void Update()
     {
-        // 1. Redam povestea de start
-        if (sunetPovesteStart != null)
-        {
-            PlaySound(sunetPovesteStart);
-            // Calculatorul asteapta exact cat dureaza sunetul
-            yield return new WaitForSeconds(sunetPovesteStart.length);
-
-            // Mica pauza de respiratie intre sunete (0.5 secunde)
-            yield return new WaitForSeconds(0.5f);
-        }
-
-        // 2. Redam instructiunile
-        PlaySound(instructiuniStart);
-    }
-
-    public void PlaySound(AudioClip clip)
-    {
-        if (clip != null && audioSource != null)
-        {
-            audioSource.Stop();
-            audioSource.PlayOneShot(clip);
-        }
-    }
-
-    public void PlayErrorSound()
-    {
-        PlaySound(sunetEroare);
+        // Rulam verificarea in fiecare cadru
+        CheckProgress();
     }
 
     void CheckProgress()
     {
-        if (currentStageFinished || decorationsContainer == null) return;
-
-        if (decorationsContainer.childCount >= itemsNeededToWin)
+        // 1. Verificam daca avem container
+        if (decorationsContainer == null)
         {
+            Debug.LogError("LIPSA CONTAINER! Trage ActiveDecorations in Inspector!");
+            return;
+        }
+
+        // 2. Numaram obiectele (SPIONUL)
+        int numarObiecte = decorationsContainer.childCount;
+
+        // Afisam mesajul doar daca se schimba ceva, ca sa nu umplem consola degeaba,
+        // DAR il afisam fortat daca ai >= 4 obiecte.
+        if (numarObiecte >= 1)
+        {
+            // Debug.Log("Numar curent: " + numarObiecte + " / Tinta: " + itemsNeededToWin);
+        }
+
+        // 3. Verificam victoria
+        if (!currentStageFinished && numarObiecte >= itemsNeededToWin)
+        {
+            Debug.Log("!!! VICTORIE DETECTATA !!! Avem " + numarObiecte + " flori.");
             StageComplete();
         }
     }
 
     void StageComplete()
     {
+        Debug.Log("Executam StageComplete()...");
         currentStageFinished = true;
 
         if (CurrentSeason == SeasonType.Spring) springDone = true;
         if (CurrentSeason == SeasonType.Summer) summerDone = true;
         if (CurrentSeason == SeasonType.Autumn) autumnDone = true;
 
-        if (messagePanel != null) messagePanel.SetActive(true);
+        // ACTIVAM MESAJUL VIZUAL
+        if (messagePanel != null)
+        {
+            messagePanel.SetActive(true);
+            Debug.Log("Am activat Panoul de Mesaj (WinMessage).");
+        }
+        else
+        {
+            Debug.LogError("NU GASESC Message Panel! Trage WinMessage in Inspector!");
+        }
 
+        // REDAM AUDIO
         PlaySound(sunetSucces);
 
+        // SETAM TEXTUL
         if (CurrentSeason == SeasonType.Winter)
         {
             if (messageText != null) messageText.text = "FELICITĂRI!\nAi completat ciclul vieții!";
             PlaySound(sunetFinal);
+            // ---> AICI SE APELEAZA SUNETUL FINAL <---
+            //AICI E FINALUL (TONY)
+
         }
         else
         {
@@ -137,7 +140,8 @@ public class TreeLevelManager : MonoBehaviour
             (newSeason == SeasonType.Autumn && !summerDone) ||
             (newSeason == SeasonType.Winter && !autumnDone))
         {
-            Debug.Log("Inca nu ai terminat anotimpul curent!");
+            Debug.Log("Inca nu ai terminat anotimpul curent! Ai nevoie de " + itemsNeededToWin + " obiecte.");
+            PlayErrorSound();
             return;
         }
 
@@ -147,8 +151,6 @@ public class TreeLevelManager : MonoBehaviour
         CurrentSeason = newSeason;
         UpdateBackgrounds();
 
-        // Evitam sa redam numele anotimpului ("Primavara") fix cand incepe jocul,
-        // pentru ca s-ar suprapune cu povestea. Redam doar la schimbare manuala.
         if (Time.time > 1f)
         {
             switch (newSeason)
@@ -161,6 +163,14 @@ public class TreeLevelManager : MonoBehaviour
         }
     }
 
+    // ... (restul functiilor raman la fel, le pun mai jos comprimate)
+    IEnumerator PlayStartSequence()
+    {
+        if (sunetPovesteStart != null) { PlaySound(sunetPovesteStart); yield return new WaitForSeconds(sunetPovesteStart.length + 0.5f); }
+        PlaySound(instructiuniStart);
+    }
+    public void PlaySound(AudioClip clip) { if (clip != null && audioSource != null) audioSource.PlayOneShot(clip); }
+    public void PlayErrorSound() { PlaySound(sunetEroare); }
     void ClearTreeInstant()
     {
         if (decorationsContainer != null)
@@ -171,14 +181,12 @@ public class TreeLevelManager : MonoBehaviour
             foreach (var child in children) Destroy(child);
         }
     }
-
     void UpdateBackgrounds()
     {
         if (springBG != null) springBG.SetActive(false);
         if (summerBG != null) summerBG.SetActive(false);
         if (autumnBG != null) autumnBG.SetActive(false);
         if (winterBG != null) winterBG.SetActive(false);
-
         switch (CurrentSeason)
         {
             case SeasonType.Spring: if (springBG != null) springBG.SetActive(true); break;
