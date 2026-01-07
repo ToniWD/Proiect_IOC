@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI; // Required to use the Button class
 using System.Collections.Generic;
 
 public class Level9 : MonoBehaviour
@@ -9,12 +10,13 @@ public class Level9 : MonoBehaviour
     public GameObject greenLight;
     public GameObject redLight;
 
-    public GameObject stayButton;
-    public GameObject goButton;
+    // Changed to Button type to access the interactable property
+    public Button stayButton; 
+    public Button goButton;
 
     [Header("Character Animation Settings")]
     public SpriteRenderer characterRenderer; 
-    public Sprite[] walkSprites; // Assign your 4 images here
+    public Sprite[] walkSprites; 
     public Transform startCrosswalkPoint; 
     public Transform endCrosswalkPoint;   
     public Vector3 finalScale = new Vector3(0.5f, 0.5f, 1f); 
@@ -28,6 +30,9 @@ public class Level9 : MonoBehaviour
     void Start()
     {
         audioManager = GameObject.Find("AudioPlayer").GetComponent<AudioManager>();
+
+        // Lock buttons during initial intro
+        StartCoroutine(DisableButtonsTemporarily(10f)); 
 
         // "Vrei să mă ajuți să trec în siguranță?"
         StartCoroutine(audioManager.PlayAudioList(new List<string> { "intro" },
@@ -45,26 +50,19 @@ public class Level9 : MonoBehaviour
         ));
     }
 
-    void showButtons()
-    {
-        stayButton.SetActive(true);
-        goButton.SetActive(true);
+    void showButtons() {
+        stayButton.interactable = true;
+        goButton.interactable = true;
     }
 
-    public void playGoButtonSound()
+    // Helper method to lock buttons for a specific time
+    IEnumerator DisableButtonsTemporarily(float duration)
     {
-        if (Time.time > lastHoverTime + hoverCooldown)
-        {
-            // "Trecem"
-            StartCoroutine(audioManager.PlayAudioList(new List<string> { "99-trecem" }));
-            lastHoverTime = Time.time;
-        }
-    }
-
-    public void playStayButtonSound()
-    {
-        // "Așteptăm"
-        StartCoroutine(audioManager.PlayAudioList(new List<string> { "98-asteptam" }));
+        stayButton.interactable = false;
+        goButton.interactable = false;
+        yield return new WaitForSeconds(duration);
+        stayButton.interactable = true;
+        goButton.interactable = true;
     }
 
     public void clickStayButton()
@@ -72,14 +70,18 @@ public class Level9 : MonoBehaviour
         if (redLight.activeSelf && !isTransitioning) 
         {
             isTransitioning = true;
+            
+            // Lock buttons for 1 second
+            StartCoroutine(DisableButtonsTemporarily(3f)); 
+
             // "Exact! La roșu stăm pe loc."
             StartCoroutine(audioManager.PlayAudioList(new List<string> { "02-rosu-corect" }));
             
-            // Wait 3 seconds then switch the light
             StartCoroutine(WaitAndSwitchLight(3f));
         }
         else if (greenLight.activeSelf)
         {
+            StartCoroutine(DisableButtonsTemporarily(1.5f));
             // "Hai să alegem alt răspuns"
             StartCoroutine(audioManager.PlayAudioList(new List<string> { "10-hai-sa-alegem-alt-raspuns" }));
         }
@@ -90,6 +92,7 @@ public class Level9 : MonoBehaviour
         yield return new WaitForSeconds(delay);
         redLight.SetActive(false);
         greenLight.SetActive(true);
+        // "Priveste semaforul"
         StartCoroutine(audioManager.PlayAudioList(new List<string> { "11-priveste-semaforul" }));
         isTransitioning = false;
     }
@@ -98,35 +101,31 @@ public class Level9 : MonoBehaviour
     {
         if (greenLight.activeSelf)
         {
-            stayButton.SetActive(false);
-            goButton.SetActive(false);
+            // Fully disable for the end of the level
+            stayButton.interactable = false;
+            goButton.interactable = false;
             
             StartCoroutine(HandleWinningSequence());
         }
         else
         {
+            StartCoroutine(DisableButtonsTemporarily(3f));
             playIncorrectGoSound();
         }
     }
 
     void playIncorrectGoSound()
     {
-        // Keep the 4 incorrect sounds selection
         List<string> audios = new List<string> {
-            "01-nu-trecem-pe-rosu",
-            "02-nu-trecem-pe-rosu",
-            "03-nu-trecem-pe-rosu",
-            "04-nu-trecem-pe-rosu"
+            "01-nu-trecem-pe-rosu", "02-nu-trecem-pe-rosu",
+            "03-nu-trecem-pe-rosu", "04-nu-trecem-pe-rosu"
         };
         int randomIndex = UnityEngine.Random.Range(0, audios.Count);
-        string selectedAudio = audios[randomIndex];
-
-        StartCoroutine(audioManager.PlayAudioList(new List<string> { selectedAudio }));
+        StartCoroutine(audioManager.PlayAudioList(new List<string> { audios[randomIndex] }));
     }
     
     IEnumerator HandleWinningSequence()
     {
-        // Start movement and animation
         StartCoroutine(AnimateAndMoveCharacter());
 
         // "Bravo! La verde traversăm pe trecere."
@@ -138,19 +137,15 @@ public class Level9 : MonoBehaviour
 
     IEnumerator AnimateAndMoveCharacter()
     {
-        // Capture the original sprite and scale before we start
-        Sprite originalSprite = characterRenderer.sprite;
+        Sprite originalSprite = characterRenderer.sprite; // Remember the original pose
         Vector3 initialScale = characterRenderer.transform.localScale;
     
-        // Step 1: Disappear
         characterRenderer.enabled = false;
         yield return new WaitForSeconds(0.5f);
 
-        // Step 2: Reappear at the crosswalk start
         characterRenderer.transform.position = startCrosswalkPoint.position;
         characterRenderer.enabled = true;
 
-        // Step 3: Walk, Scale, and Cycle through the 4 images
         float elapsed = 0f;
         int spriteIndex = 0;
         float spriteTimer = 0f;
@@ -160,11 +155,9 @@ public class Level9 : MonoBehaviour
             elapsed += Time.deltaTime;
             float t = elapsed / movementDuration;
 
-            // Move and Shrink
             characterRenderer.transform.position = Vector3.Lerp(startCrosswalkPoint.position, endCrosswalkPoint.position, t);
             characterRenderer.transform.localScale = Vector3.Lerp(initialScale, finalScale, t);
 
-            // Sprite Animation loop
             spriteTimer += Time.deltaTime;
             if (spriteTimer >= animationSpeed)
             {
@@ -172,13 +165,31 @@ public class Level9 : MonoBehaviour
                 characterRenderer.sprite = walkSprites[spriteIndex];
                 spriteTimer = 0f;
             }
-
             yield return null;
         }
 
-        // Step 4: Final snap and RESET TO ORIGINAL SPRITE
         characterRenderer.transform.position = endCrosswalkPoint.position;
         characterRenderer.transform.localScale = finalScale;
-        characterRenderer.sprite = originalSprite; // This sets Momo back to her idle pose
+        characterRenderer.sprite = originalSprite; // Return to idle pose
+    }
+
+    // Protect hover sounds so they don't play if buttons are locked
+    public void playGoButtonSound()
+    {
+        if (goButton.interactable && Time.time > lastHoverTime + hoverCooldown)
+        {
+            // "Trecem"
+            StartCoroutine(audioManager.PlayAudioList(new List<string> { "99-trecem" }));
+            lastHoverTime = Time.time;
+        }
+    }
+
+    public void playStayButtonSound()
+    {
+        if (stayButton.interactable)
+        {
+            // "Așteptăm"
+            StartCoroutine(audioManager.PlayAudioList(new List<string> { "98-asteptam" }));
+        }
     }
 }
