@@ -40,7 +40,7 @@ public class Level6 : MonoBehaviour
     {
         Debug.Log("Final nivel---------------------");
 
-        StartCoroutine(audioManager.PlayAudioList(new List<string> { "final", "final hai sa continuam" }, () => { MainGameManager.play("Menu"); }));
+        StartCoroutine(audioManager.PlayAudioList(new List<string> { "final", "final hai sa continuam" }, () => { MainGameManager.play("Level 7"); }));
     }
 
 }
