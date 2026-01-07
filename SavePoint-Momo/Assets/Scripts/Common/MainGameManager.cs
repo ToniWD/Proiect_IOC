@@ -8,6 +8,8 @@ public class MainGameManager : MonoBehaviour
 
     public bool musicPause = false;
 
+    public GameObject exitMenu;
+
     private void Awake()
     {
         if (instance == null)
@@ -41,5 +43,15 @@ public class MainGameManager : MonoBehaviour
             this.GetComponent<AudioSource>().UnPause();
             musicPause = false;
         }
+    }
+
+    public void openCloseMenu()
+    {
+        exitMenu.SetActive(!exitMenu.activeSelf);
+    }
+
+    public void exitApp()
+    {
+        Application.Quit();
     }
 }
